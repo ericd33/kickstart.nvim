@@ -99,10 +99,10 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 --  Use CTRL+<hjkl> to switch between windows
 --
 --  See `:help wincmd` for a list of all window commands
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+-- vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
+-- vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
+-- vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
+-- vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 -- Extra keymaps
 -- Define a function to visually select text between nearest < and >
@@ -214,16 +214,16 @@ require('lazy').setup({
       vim.keymap.set('n', '<C-e>', function()
         harpoon.ui:toggle_quick_menu(harpoon:list())
       end, { desc = 'Quickslot list Harpoon' })
-      vim.keymap.set('n', '<C-h>', function()
+      vim.keymap.set('n', '<S-q>', function()
         harpoon:list():select(1)
       end, { desc = 'Quickslot 1' })
-      vim.keymap.set('n', '<C-t>', function()
+      vim.keymap.set('n', '<S-w>', function()
         harpoon:list():select(2)
       end, { desc = 'Quickslot 2' })
-      vim.keymap.set('n', '<C-n>', function()
+      vim.keymap.set('n', '<S-e>', function()
         harpoon:list():select(3)
       end, { desc = 'Quickslot 3' })
-      vim.keymap.set('n', '<C-s>', function()
+      vim.keymap.set('n', '<S-r>', function()
         harpoon:list():select(4)
       end, { desc = 'Quickslot 4' })
       vim.keymap.set('n', '<leader>bd>', function()
@@ -831,6 +831,19 @@ require('lazy').setup({
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     end,
   },
+  {
+    'nvim-neo-tree/neo-tree.nvim',
+    branch = 'v3.x',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
+      'MunifTanjim/nui.nvim',
+      -- "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
+    },
+  },
+  vim.keymap.set('n', '<C-h>', '<C-w>h', { desc = 'Left Buffer' }),
+  vim.keymap.set('n', '<C-l>', '<C-w>l', { desc = 'Right Buffer' }),
+  vim.keymap.set('n', '<C-n>', '<cmd>Neotree toggle<CR>', { desc = 'Open neotree' }),
 
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
