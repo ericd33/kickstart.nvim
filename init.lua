@@ -226,7 +226,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<S-r>', function()
         harpoon:list():select(4)
       end, { desc = 'Quickslot 4' })
-      vim.keymap.set('n', '<leader>bd>', function()
+      vim.keymap.set('n', '<leader>bd', function()
         harpoon:list():remove()
       end, {})
       vim.keymap.set('n', '<C-o>', function()
@@ -831,6 +831,23 @@ require('lazy').setup({
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     end,
   },
+  {
+    'axelvc/template-string.nvim',
+    branch = 'main',
+    config = function()
+      require('template-string').setup {
+        filetypes = { 'html', 'typescript', 'javascript', 'typescriptreact', 'javascriptreact', 'vue', 'svelte', 'python' }, -- filetypes where the plugin is active
+        jsx_brackets = true, -- must add brackets to JSX attributes
+        remove_template_string = false, -- remove backticks when there are no template strings
+        restore_quotes = {
+          -- quotes used when "remove_template_string" option is enabled
+          normal = [[']],
+          jsx = [["]],
+        },
+      }
+    end,
+  },
+
   {
     'nvim-neo-tree/neo-tree.nvim',
     branch = 'v3.x',

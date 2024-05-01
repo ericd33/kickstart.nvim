@@ -1,3 +1,84 @@
+# My personal neovim config
+
+## Extra added stuff
+This config is forked from kickstart.nvim
+
+### Keybindings
+
+- Diagnostics
+```
+[d 'Go to previous [D]iagnostic message'
+']d' 'Go to next [D]iagnostic message'
+'<leader>e' 'Show diagnostic [E]rror messages'
+'<leader>q' 'Open diagnostic [Q]uickfix list'
+```
+
+- Select
+
+```
+vid = select between brackets < >
+
+Harpoon
+
+Slots 1,2,3,4
+SHIFT + q,w,e,r
+
+CTRL + o prev
+CTRL + p next
+
+```
+
+
+
+### Added plugins
+- https://github.com/axelvc/template-string.nvim
+
+
+### Extra setups
+
+
+```
+//Makes telescope work on windows powershell better because of forward slashes
+      require('telescope').setup {
+        -- You can put your default mappings / updates / etc. in here
+        --  All the info you're looking for is in `:help telescope.setup()`
+        --
+        -- defaults = {
+        --   mappings = {
+        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
+        --   },
+        -- },
+        -- pickers = {}
+        defaults = {
+          check_mime_type = false,
+        },
+        pickers = {
+          find_files = {
+            find_command = {
+              'rg',
+              '--files',
+              '--glob',
+              '!{.git/*,.svelte-kit/*,target/*,node_modules/*}',
+              '--path-separator',
+              '/',
+            },
+          },
+          live_grep = {
+            additional_args = {
+              '--path-separator',
+              '/',
+            },
+          },
+        },
+        extensions = {
+          ['ui-select'] = {
+            require('telescope.themes').get_dropdown(),
+          },
+        },
+      }
+
+```
+
 # kickstart.nvim
 
 ## Introduction
