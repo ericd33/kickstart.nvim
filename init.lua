@@ -269,6 +269,10 @@ require('lazy').setup({
       }
     end,
   },
+  {
+    'neoclide/coc.nvim',
+    branch = 'release',
+  },
 
   -- NOTE: Plugins can specify dependencies.
   --
@@ -742,22 +746,15 @@ require('lazy').setup({
       }
     end,
   },
-
-  { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is.
-    --
+  {
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
+    'binhtran432k/dracula.nvim',
+    lazy = false,
+    priority = 1000,
+    opts = { transparent = true },
     init = function()
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
-
-      -- You can configure highlights by doing something like:
-      vim.cmd.hi 'Comment gui=none'
+      vim.cmd.colorscheme 'dracula'
+      --     vim.cmd.hi 'Comment gui=none'
     end,
   },
 
@@ -861,6 +858,12 @@ require('lazy').setup({
   vim.keymap.set('n', '<C-h>', '<C-w>h', { desc = 'Left Buffer' }),
   vim.keymap.set('n', '<C-l>', '<C-w>l', { desc = 'Right Buffer' }),
   vim.keymap.set('n', '<C-n>', '<cmd>Neotree toggle<CR>', { desc = 'Open neotree' }),
+  vim.keymap.set('n', 'w(', 'diwi(<Esc>pa)<Esc>'),
+  vim.keymap.set('n', 'w{', 'diwi{<Esc>pa}<Esc>'),
+  vim.keymap.set('n', 'w"', 'diwi"<Esc>pa"<Esc>'),
+  vim.keymap.set('v', '(', 'di(<Esc>pa)<Esc>'),
+  vim.keymap.set('v', '{', 'di{<Esc>pa}<Esc>'),
+  vim.keymap.set('v', '"', 'di"<Esc>pa"<Esc>'),
 
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
