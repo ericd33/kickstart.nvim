@@ -1,0 +1,12 @@
+{
+  "Safe Action": {
+    "prefix": "action",
+    "body": [
+      "import { action } from \"@/lib/safe-action\";",
+      "",
+      "const schema = z.object({})",
+      "export default action(schema, async function ${1:function}() {",
+      "})"
+    ]
+  }
+}

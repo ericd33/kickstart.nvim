@@ -153,6 +153,14 @@ if not vim.loop.fs_stat(lazypath) then
 end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
+function organize_imports()
+  local params = {
+    command = '_typescript.organizeImports',
+    arguments = { vim.api.nvim_buf_get_name(0) },
+    title = '',
+  }
+  vim.lsp.buf.execute_command(params)
+end
 -- [[ Configure and install plugins ]]
 --
 --  To check the current status of your plugins, run
@@ -546,7 +554,7 @@ require('lazy').setup({
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         -- clangd = {},
-        -- gopls = {},
+        gopls = {},
         -- pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
@@ -634,7 +642,7 @@ require('lazy').setup({
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
-        --
+        json = { 'jq' },
         -- You can use a sub-list to tell conform to run *until* a formatter
         -- is found.
         -- javascript = { { "prettierd", "prettier" } },
@@ -662,12 +670,13 @@ require('lazy').setup({
           -- `friendly-snippets` contains a variety of premade snippets.
           --    See the README about individual language/framework/plugin snippets:
           --    https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
+          {
+            'rafamadriz/friendly-snippets',
+            config = function()
+              require('luasnip.loaders.from_vscode').lazy_load()
+              require('luasnip.loaders.from_vscode').lazy_load { paths = vim.fn.stdpath 'config' .. '/mysnips/' }
+            end,
+          },
         },
       },
       'saadparwaiz1/cmp_luasnip',
@@ -861,9 +870,11 @@ require('lazy').setup({
   vim.keymap.set('n', 'w(', 'diwi(<Esc>pa)<Esc>'),
   vim.keymap.set('n', 'w{', 'diwi{<Esc>pa}<Esc>'),
   vim.keymap.set('n', 'w"', 'diwi"<Esc>pa"<Esc>'),
-  vim.keymap.set('v', '(', 'di(<Esc>pa)<Esc>'),
-  vim.keymap.set('v', '{', 'di{<Esc>pa}<Esc>'),
-  vim.keymap.set('v', '"', 'di"<Esc>pa"<Esc>'),
+  vim.keymap.set('v', '(', 'c()<Esc>hp'),
+  vim.keymap.set('v', '{', 'c{}<Esc>hp'),
+  vim.keymap.set('v', '"', 'c""<Esc>hp'),
+  -- vim.keymap.set('n', '<S-V>"', 'c""<Esc>hpJ'),
+  -- <Esc>hpa
 
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
