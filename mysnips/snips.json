@@ -8,5 +8,17 @@
       "export default action(schema, async function ${1:function}() {",
       "})"
     ]
+  },
+  "Log Worthit Query": {
+    "prefix": "qlog",
+    "body": [
+      "log_message('error', str_replace('\\\\\\\\', '', var_export($$this->db->last_query(),true))); // <----- LOG TODO: BORRAR"
+    ]
+  },
+  "Log Worthit": {
+    "prefix": "wlog",
+    "body": [
+      "log_message('error', var_export(${1:'entra aca'},true)); // <----- LOG TODO: BORRAR"
+    ]
   }
 }

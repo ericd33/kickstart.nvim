@@ -3,6 +3,8 @@
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
+vim.g.nofsync = true
+vim.g.lazyvim_prettier_needs_config = false
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = false
@@ -401,6 +403,14 @@ require('lazy').setup({
         })
       end, { desc = '[/] Fuzzily search in current buffer' })
 
+      vim.keymap.set('n', '<leader>sl', function()
+        -- You can pass additional configuration to Telescope to change the theme, layout, etc.
+        builtin.live_grep {
+          ignore = true,
+          no_ignore = false,
+        }
+      end, { desc = '[G] Live grep in all files' })
+
       -- It's also possible to pass additional configuration options.
       --  See `:help telescope.builtin.live_grep()` for information about particular keys
       vim.keymap.set('n', '<leader>s/', function()
@@ -433,6 +443,9 @@ require('lazy').setup({
       -- used for completion, annotations and signatures of Neovim apis
       { 'folke/neodev.nvim', opts = {} },
     },
+    opts = {
+      autoformat = false,
+    },
     config = function()
       -- Brief aside: **What is LSP?**
       --
@@ -452,7 +465,6 @@ require('lazy').setup({
       --  - Autocompletion
       --  - Symbol Search
       --  - and more!
-      --
       -- Thus, Language Servers are external tools that must be installed separately from
       -- Neovim. This is where `mason` and related plugins come into play.
       --
@@ -564,8 +576,10 @@ require('lazy').setup({
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
         tsserver = {},
+        intelephense = {},
         --
 
+        prettier = {},
         lua_ls = {
           -- cmd = {...},
           -- filetypes = { ...},
@@ -594,13 +608,17 @@ require('lazy').setup({
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
-        'lua_ls',
-        'tsserver',
         'stylua', -- Used to format Lua code
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
       require('mason-lspconfig').setup {
+        ensure_installed = {
+          'lua_ls',
+          'tsserver',
+          'eslint',
+        },
+        automatic_installation = true,
         handlers = {
           function(server_name)
             local server = servers[server_name] or {}
@@ -617,11 +635,14 @@ require('lazy').setup({
 
   { -- Autoformat
     'stevearc/conform.nvim',
-    lazy = false,
+    event = { 'BufWritePre' },
+    cmd = { 'ConformInfo' },
     keys = {
       {
         '<leader>f',
-        ':!prettier %:p --write<CR>:e!<CR><CR>',
+        function()
+          require('conform').format { async = true, lsp_format = 'fallback' }
+        end,
         mode = '',
         desc = '[F]ormat buffer',
       },
@@ -633,24 +654,27 @@ require('lazy').setup({
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
         local disable_filetypes = { c = true, cpp = true }
+        local lsp_format_opt
+        if disable_filetypes[vim.bo[bufnr].filetype] then
+          lsp_format_opt = 'never'
+        else
+          lsp_format_opt = 'fallback'
+        end
         return {
           timeout_ms = 500,
-          lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
+          lsp_format = lsp_format_opt,
         }
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
-        -- You can use a sub-list to tell conform to run *until* a formatter
-        -- is found.
-        typescript = { { 'prettierd', 'prettier' } },
-        typescriptreact = { { 'prettierd', 'prettier' } },
-        javascript = { { 'prettierd', 'prettier' } },
-        javascriptreact = { { 'prettierd', 'prettier' } },
-        json = { { 'prettierd', 'prettier' } },
-        html = { { 'prettierd', 'prettier' } },
-        css = { { 'prettierd', 'prettier' } },
+        --
+        -- You can use 'stop_after_first' to run the first available formatter from the list
+        javascript = { 'prettierd', 'prettier', stop_after_first = true },
+        typescript = { 'prettierd', 'prettier', stop_after_first = true },
+        typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+        javascriptreact = { 'prettierd', 'prettier', stop_after_first = true },
       },
     },
   },
@@ -816,7 +840,7 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     opts = {
-      ensure_installed = { 'bash', 'c', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc' },
+      ensure_installed = { 'bash', 'c', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'php', 'vimdoc' },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -840,13 +864,6 @@ require('lazy').setup({
       --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
       --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
-    end,
-  },
-  {
-    'nvim-tree/nvim-web-devicons',
-    branch = 'master',
-    config = function()
-      require('nvim-web-devicons').setup()
     end,
   },
   {
